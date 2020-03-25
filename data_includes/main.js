@@ -33,18 +33,19 @@ PennController(
 .log("ID", getVar("ID"))                                        //record the ID value into the results file
 
 //// Settings of the experimental trials ////
-PennController(
-    newAudio("description", "2fishRoundTank.mp3")               //add an audio to the experimental trial ("label", "name of the stored file")
+Template(                                        //set a template of the experiment for how it has to run
+variable => PennController(                                     //set the actual PennController as a variable, so that it can loop into each trial
+    newAudio("description", variable.AudioFile)                  //add an audio to the experimental trial ("label", "name of the variable under which file names are found")
         .play()                                                 //and play it
     ,
-    newText("The fish swim in a tank which is perfectly round") //add a text 
+    newText(variable.Description)                               //add a text (concrete text to be taken from the template file)          
         .print()                                                //and print it on the screen
 //        .unfold(2600)                                           //alternative: make the text unfold on the screen (number = ms to unfold)    
     ,
-    newImage("two", "2fishRoundTank.png")                       //add an image newImage("label of the image to refer to", "name of the image as stored on the server")
+    newImage("two", variable.PluralImageFile)                       //add an image newImage("label of the image to refer to", "name of the image as stored on the server")
         .settings.size(200, 200)                                //resize the image (in pixels)
     ,
-    newImage("one", "1fishSquareTank.png")
+    newImage("one", variable.SingularImageFile)
         .settings.size(200, 200)
     ,
     newCanvas(450, 200)                                         //add a canvas, size of the cancas in pixels
@@ -67,6 +68,10 @@ PennController(
 //        .wait("first")                                          //alternative if you want to wait for the audio to finish before getting into the next trial
 )
 .log("ID", getVar("ID"))                                        //record the participant's ID for the results of each trial 
+.log("Item", variable.Item)                                     //record the name/number of the item, as specified in the design file        
+.log("Ending", variable.Ending)                                 //record the value of the cilumn "Ending" as specified in the design file for each item 
+.log("Group", variable.Group)                                   //record the group to which the trial belongs to (automatic counterbalanced design)
+)
 PennController.SendResults()                                    //send the results after the experiment is completed (do not record the resutls from subjects who gave up)
 
 //// Goodbye page ////
